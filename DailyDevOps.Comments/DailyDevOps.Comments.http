@@ -1,0 +1,6 @@
+@DailyDevOps.Comments_HostAddress = http://localhost:5118
+
+GET {{DailyDevOps.Comments_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

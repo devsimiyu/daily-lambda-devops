@@ -1,0 +1,74 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: "AWS::Serverless-2016-10-31"
+Description: "An AWS Serverless Application that uses the ASP.NET Core framework running in Amazon Lambda."
+
+Parameters:
+
+  Audience:
+    Type: String
+    Default: daily-devops-api
+
+Globals:
+  
+  Function:
+    Runtime: dotnet8
+    Timeout: 30
+    MemorySize: 512
+
+Resources:
+
+  HttpApiGateway:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      CorsConfiguration:
+        AllowOrigins:
+          - "*"
+        AllowMethods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - OPTIONS
+          - HEAD
+        AllowHeaders:
+          - "*"
+        AllowCredentials: false
+        MaxAge: 3600
+      Auth:
+        Authorizers:
+          OAuth2Authorizer:
+            IdentitySource: $request.header.Authorization
+            JwtConfiguration:
+              Issuer: https://57ic2cwid5.execute-api.us-east-1.amazonaws.com/auth
+              Audience:
+                - daily-devops
+
+  TicketsFunction:
+    Type: "AWS::Serverless::Function"
+    Properties:
+      Handler: DailyDevOps.Tickets::DailyDevOps.Tickets.LambdaEntryPoint::FunctionHandlerAsync
+      CodeUri: ../DailyDevOps.Tickets/bin/Lambda
+      Events:
+        HttpApiEvent:
+          Type: HttpApi
+          Properties:
+            Path: /tickets/{proxy+}
+            Method: ANY
+            ApiId:
+              Ref: HttpApiGateway
+            Auth:
+              Authorizer: OAuth2Authorizer
+  
+  AuthFunction:
+    Type: "AWS::Serverless::Function"
+    Properties:
+      Handler: DailyDevOps.Auth::DailyDevOps.Auth.LambdaEntryPoint::FunctionHandlerAsync
+      CodeUri: ../DailyDevOps.Auth/bin/Lambda
+      Events:
+        HttpApiEvent:
+          Type: HttpApi
+          Properties:
+            Path: /auth/{proxy+}
+            Method: ANY
+            ApiId:
+              Ref: HttpApiGateway

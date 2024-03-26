@@ -1,0 +1,6 @@
+@DailyDevOps.Auth_HostAddress = http://localhost:5299
+
+GET {{DailyDevOps.Auth_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
