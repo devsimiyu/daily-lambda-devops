@@ -47,3 +47,6 @@ msbuild.wrn
 
 # Keys
 *.key
+
+# Config files
+appsettings.*.json
