@@ -16,20 +16,22 @@ public class OpenIdConnectService : IOpenIdConnectService
 {
     private readonly RsaKeyGenerator _rsaKeyGenerator;
     private readonly IServer _server;
+    private readonly IConfiguration _configuration;
 
-    public OpenIdConnectService(RsaKeyGenerator rsaKeyGenerator, IServer server)
+    public OpenIdConnectService(RsaKeyGenerator rsaKeyGenerator, IServer server, IConfiguration configuration)
     {
         _rsaKeyGenerator = rsaKeyGenerator ?? throw new Exception($"{nameof(RsaKeyGenerator)} is required");
         _server = server ?? throw new Exception($"{nameof(IServer)} is required");
+        _configuration = configuration ?? throw new Exception($"{nameof(IConfiguration)} is required");
     }
 
     public OpenIdConnectConfiguration GetConfiguration()
     {
-        var host = "https://57ic2cwid5.execute-api.us-east-1.amazonaws.com/auth";
+        var issuer = _configuration["Issuer"];
         var config = new OpenIdConnectConfiguration
         {
-            JwksUri = $"{host}/.well-known/jwks.json",
-            Issuer = host
+            JwksUri = $"{issuer}/.well-known/jwks.json",
+            Issuer = issuer
         };
 
         return config;
@@ -37,11 +39,20 @@ public class OpenIdConnectService : IOpenIdConnectService
 
     public object GetJwks()
     {
-        var rsaKey = _rsaKeyGenerator.GetRsaKey();
-        var jwk = JsonWebKeyConverter.ConvertFromRSASecurityKey(rsaKey);
-        var json = JsonSerializer.Serialize(jwk);
-        var keys = new { keys = new object[] { JsonSerializer.Deserialize<object>(json) }};
+        var jwks = new 
+        {
+            keys = new object[]
+            {
+                new {
+                    alg = "RSA256",
+                    kty = "RSA",
+                    use = "sig",
+                    kid = _configuration["Jwt:KeyId"],
+                    x5c = new string[] { _configuration["Jwt:PublicKey"] }
+                }
+            }
+        };
 
-        return keys;
+        return jwks;
     }
 }

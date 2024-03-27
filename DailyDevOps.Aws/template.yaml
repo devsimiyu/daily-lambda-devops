@@ -4,9 +4,13 @@ Description: "An AWS Serverless Application that uses the ASP.NET Core framework
 
 Parameters:
 
+  Issuer:
+    Type: String
+    Default: ""
+
   Audience:
     Type: String
-    Default: daily-devops-api
+    Default: daily-devops
 
 Globals:
   
@@ -39,9 +43,10 @@ Resources:
           OAuth2Authorizer:
             IdentitySource: $request.header.Authorization
             JwtConfiguration:
-              Issuer: https://57ic2cwid5.execute-api.us-east-1.amazonaws.com/auth
-              Audience:
-                - daily-devops
+              Issuer:
+                Ref: Issuer
+              Audience: 
+                - !Ref Audience
 
   TicketsFunction:
     Type: "AWS::Serverless::Function"
@@ -64,6 +69,10 @@ Resources:
     Properties:
       Handler: DailyDevOps.Auth::DailyDevOps.Auth.LambdaEntryPoint::FunctionHandlerAsync
       CodeUri: ../DailyDevOps.Auth/bin/Lambda
+      Environment:
+        Variables:
+          Issuer: !Ref Issuer
+          Audience: !Ref Audience
       Events:
         HttpApiEvent:
           Type: HttpApi

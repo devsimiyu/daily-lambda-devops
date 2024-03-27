@@ -1,0 +1,25 @@
+version: 0.1
+
+default:
+
+  deploy:
+    parameters:
+      stack_name: rodgers-daily-devops
+      template_file: template.[yaml|yml|json]
+      profile: daily-devops
+      region: us-east-1
+      resolve_s3: true
+      s3_prefix: rodgers-daily-devops
+      capabilities:
+        - CAPABILITY_IAM
+      on_failure: DELETE
+      parameter_overrides:
+        - Issuer=https://xvhgvl5izk.execute-api.us-east-1.amazonaws.com/auth
+        - Audience=daily-devops
+
+  delete:
+    parameters:
+      stack_name: rodgers-daily-devops
+      profile: daily-devops
+      region: us-east-1
+      s3_prefix: rodgers-daily-devops

@@ -6,17 +6,17 @@ namespace DailyDevOps.Auth.Util;
 public class RsaKeyGenerator
 {
     private readonly RSA _rsa = RSA.Create();
+    private readonly IConfiguration _configuration;
 
     public RsaKeyGenerator(IConfiguration configuration)
     {
-        var xml = configuration["Jwt:XmlKey"] ?? throw new Exception("Jwt:XmlKey configuration is required");
-        _rsa.KeySize = 2048;
+        _configuration = configuration ?? throw new Exception($"{nameof(IConfiguration)} is required");
 
-        _rsa.FromXmlString(xml);
+        _rsa.ImportFromPem(_configuration["Jwt:PrivateKey"]);
     }
 
-    public RsaSecurityKey GetRsaKey() => new RsaSecurityKey(_rsa.ExportParameters(true))
+    public RsaSecurityKey GetRsaKey() => new RsaSecurityKey(_rsa)
     {
-        KeyId = "123456"
+        KeyId = _configuration["Jwt:KeyId"]
     };
 }

@@ -15,16 +15,20 @@ public interface IAuthService
 public class AuthService : IAuthService
 {
     private readonly RsaKeyGenerator _rsaKeyGenerator;
+    private readonly IConfiguration _configuration;
 
-    public AuthService(RsaKeyGenerator rsaKeyGenerator)
-        => _rsaKeyGenerator = rsaKeyGenerator ?? throw new Exception($"{nameof(RsaKeyGenerator)} is required");
+    public AuthService(RsaKeyGenerator rsaKeyGenerator, IConfiguration configuration)
+    {
+        _rsaKeyGenerator = rsaKeyGenerator ?? throw new Exception($"{nameof(RsaKeyGenerator)} is required");
+        _configuration = configuration ?? throw new Exception($"{nameof(IConfiguration)} is required");
+    }
     
     public string Login(LoginDto loginDto)
     {
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.Email, loginDto.Email),
-            new Claim("kid", "123456"),
+            new Claim("kid", _configuration["Jwt:KeyId"]),
         };
         var rsaKey = _rsaKeyGenerator.GetRsaKey();
         var signingCredentials = new SigningCredentials(rsaKey, SecurityAlgorithms.RsaSha256);
@@ -33,8 +37,8 @@ public class AuthService : IAuthService
             expires: DateTime.Now.AddHours(12),
             notBefore: DateTime.Now,
             signingCredentials: signingCredentials,
-            audience: "daily-devops",
-            issuer: "https://57ic2cwid5.execute-api.us-east-1.amazonaws.com/auth"
+            audience: _configuration["Audience"],
+            issuer: _configuration["Issuer"]
         );
         var jws = new JwtSecurityTokenHandler().WriteToken(jwt);
 
