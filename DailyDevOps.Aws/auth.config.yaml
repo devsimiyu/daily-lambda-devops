@@ -1,0 +1,24 @@
+version: 0.1
+
+default:
+
+  deploy:
+    parameters:
+      stack_name: rodgers-daily-devops-auth
+      template_file: auth.template.yaml
+      profile: daily-devops
+      region: us-east-1
+      resolve_s3: true
+      s3_prefix: rodgers-daily-devops-auth
+      capabilities:
+        - CAPABILITY_IAM
+      on_failure: DELETE
+      parameter_overrides:
+        - AuthS3BucketName=rodgers-daily-devops-auth-oidc
+
+  delete:
+    parameters:
+      stack_name: rodgers-daily-devops-auth
+      profile: daily-devops
+      region: us-east-1
+      s3_prefix: rodgers-daily-devops-auth

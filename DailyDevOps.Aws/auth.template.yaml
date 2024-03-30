@@ -1,0 +1,34 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+Description: OpenId Connect (OIDC) document discovery and Json Web Key Sets (JWKS) hosted on S3 buckets.
+
+Parameters:
+
+  AuthS3BucketName:
+    Type: String
+    Default: ""
+
+Resources:
+
+  AuthS3Bucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Delete
+    Properties:
+      BucketName:
+        Ref: AuthS3BucketName
+      PublicAccessBlockConfiguration:
+        BlockPublicPolicy: FALSE
+
+  AuthS3BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket:
+        Ref: AuthS3Bucket
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal: "*"
+            Action: s3:GetObject
+            Resource:
+              Fn::Join: ["", ["arn:aws:s3:::", !Ref AuthS3Bucket, "/*"]]

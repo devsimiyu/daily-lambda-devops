@@ -1,6 +1,6 @@
-AWSTemplateFormatVersion: "2010-09-09"
-Transform: "AWS::Serverless-2016-10-31"
-Description: "An AWS Serverless Application that uses the ASP.NET Core framework running in Amazon Lambda."
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+Description: An AWS Serverless Application that uses the ASP.NET Core framework running in Amazon Lambda.
 
 Parameters:
 
@@ -10,7 +10,7 @@ Parameters:
 
   Audience:
     Type: String
-    Default: daily-devops
+    Default: ""
 
 Globals:
   
@@ -49,7 +49,7 @@ Resources:
                 - !Ref Audience
 
   TicketsFunction:
-    Type: "AWS::Serverless::Function"
+    Type: AWS::Serverless::Function
     Properties:
       Handler: DailyDevOps.Tickets::DailyDevOps.Tickets.LambdaEntryPoint::FunctionHandlerAsync
       CodeUri: ../DailyDevOps.Tickets/bin/Lambda
@@ -65,7 +65,7 @@ Resources:
               Authorizer: OAuth2Authorizer
   
   AuthFunction:
-    Type: "AWS::Serverless::Function"
+    Type: AWS::Serverless::Function
     Properties:
       Handler: DailyDevOps.Auth::DailyDevOps.Auth.LambdaEntryPoint::FunctionHandlerAsync
       CodeUri: ../DailyDevOps.Auth/bin/Lambda

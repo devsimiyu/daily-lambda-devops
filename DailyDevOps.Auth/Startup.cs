@@ -22,7 +22,6 @@ public class Startup
     {
         services.AddSingleton<RsaKeyGenerator>();
         services.AddScoped<IAuthService, AuthService>();
-        services.AddScoped<IOpenIdConnectService, OpenIdConnectService>();
         services.AddHealthChecks();
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
@@ -72,20 +71,6 @@ public class Startup
                 });
 
                 return Results.ValidationProblem(errors);
-            });
-
-            endpoints.MapGet("auth/.well-known/openid-configuration", ([FromServices] IOpenIdConnectService openIdConnectService) =>
-            {
-                var config = openIdConnectService.GetConfiguration();
-
-                return Results.Ok(config);
-            });
-            
-            endpoints.MapGet("auth/.well-known/jwks.json", ([FromServices] IOpenIdConnectService openIdConnectService) =>
-            {
-                var jwks = openIdConnectService.GetJwks();
-
-                return Results.Ok(jwks);
             });
         });
     }

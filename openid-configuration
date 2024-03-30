@@ -1,0 +1,4 @@
+{
+    "issuer": "https://rodgers-daily-devops-auth-oidc.s3.amazonaws.com",
+    "jwks_uri": "https://rodgers-daily-devops-auth-oidc.s3.amazonaws.com/.well-known/jwks.json"
+}
