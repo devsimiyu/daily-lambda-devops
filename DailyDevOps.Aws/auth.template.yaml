@@ -12,7 +12,7 @@ Resources:
 
   AuthS3Bucket:
     Type: AWS::S3::Bucket
-    DeletionPolicy: Delete
+    DeletionPolicy: Retain
     Properties:
       BucketName:
         Ref: AuthS3BucketName
