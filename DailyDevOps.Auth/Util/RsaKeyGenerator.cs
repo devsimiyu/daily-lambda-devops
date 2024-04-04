@@ -12,7 +12,7 @@ public class RsaKeyGenerator
     {
         _configuration = configuration ?? throw new Exception($"{nameof(IConfiguration)} is required");
 
-        _rsa.ImportFromPem(_configuration["Jwt:PrivateKey"]);
+        _rsa.ImportFromPem(_configuration["PrivateKey"]);
     }
 
     public RsaSecurityKey GetRsaKey() => new RsaSecurityKey(_rsa)

@@ -21,6 +21,13 @@ Globals:
 
 Resources:
 
+  AuthSecret:
+    Type: AWS::SecretsManager:Secret
+    Properties:
+      Name: AuthPrivateKey
+      Description: RSA private key for signing JWT tokens
+      SecretString: '-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCi4egmCU3XZchG\nNeDNZR0PnJ0CB/vs14H+8Hi0mHHVeEYb7QQABqvlG5bxqgyFmhKZsPas0b+iqHjy\n/M8nzco1Njpg9bjSKLbyIBsRhHyQ1G+kEepimMshKtUcdRP+C2/RbhPGY1jwzeF5\nJS0kSEvb5K1Pn52HzyxmgNHMwTbTcCMspmNaWmK8y91KsDglxuRTvPsePonlnRCA\nDkzqb8bfBjibuv7MaJ2a+VY1fURKdVoHYdj6NgAltUBzrlsb7XR664hP2o87s9qT\n98UclaC3az1C03HRtkYWFjHefQZycnQQB4Z5ejaX5IPE9jvwjAkYHUXNLHAEnLym\nem0cR1MVAgMBAAECggEABWIeABPSpMnSYq+pLGCpIzjz33tQEjXVMA3Wj3FyYbHF\n72pX9YBC8iGFTZtnKos7DiVRIckU4lVbGfzNA+3DPxr5tvaoExoRYdM50cxlKYw7\n3FpTOsr9+6ykunoMHRtXqL5QnP/vkpXbW9uksExLZYsbR0RpOnHYb9LWHEROgZJn\nr00UYZeNNm60j3xT66hFA191LV/CEIf3JHfVqKBczZ1/c/W8TK9aSeDBW19D+eSA\nkLgA6l2ptr4YzaC+R0/fPZ3W8GP4ziW8EOrZ+0bjNNjea0Vp3lVDykOIK9bp0+L4\nmL0jIpeB3SBTDjRz1fE7e4BIsx5GgZk7LiQ0MKGvQQKBgQDa+/+8mQwbSsfL1W2d\n3yE5nWkzCsxnyQOt9JXZV5+EJ0ugITDM14FBgBI6hkkUDrusX6GSU+9iKT3zS6Ai\nxzUVuBx5iJSOr+6Lw3PtViLVy9lYjNGSsT3v2wTgWya8HNHVG1WVCM4PhmJJlxbF\n+kvDZL2IIj+FdIhYaPPLrCP46QKBgQC+ajzKXoG3BNFdjMsQd8qzBx0c1pXknl5U\nEwmS9SUwSFuuSi2A26bzAbkauUtuQ7SpBQ3aG3PBobfjDd70e7SF0v3LnoIjR6Ed\nzoP5FvOQF8Oeuc8mx7GGvpNGtr1kPeUdN59Isk9wCPoM98zILPcP9KSA/RIShqfN\nB/C57ECtTQKBgQCcToGVYf0FQhRoxzgOFuWFVXlwqIWMkyvgMBQB5gyDbPULIIXP\nwQeO9FaOlal1+qo0+LHAW88j1uJUVifAi0a18QvKKBY53xQ7iNCnmPMWfgHutd0l\ngwP9v+y0I/v7C+su3OryjS1gYYConILx353So4axtBh5Ltvfl1Jlj8LBeQKBgQCV\nkTFK7E0Li3dA+lSPDOllEpNlkZCP0W3asFF246RgdpW9I3r2mpJakuHpAd8kL356\nvQOSbLnSQMsGSGD2vSyhaYf9Jval65+8n/i98a9DYcdAqEb0+SqS4qMgim3djVio\nSIaPPbB0Gjj/cq2iFt/B4rJMt3w4nRi1TiVihRaQiQKBgDl1Nsv08zlMAMZcJ+VA\nOcqejXkauklEnKOaFH7yBlQQXCRCes/ZVqT74eVhlztz4fEkf9oG2SFH6Sp2x3kz\neUaeesu7hmjV2QpLEC7BB6ly6Vu3aKdV4yc3LWjrc6brbHwB1ypgErSvGdyAl6qr\nyYyoMPKtnqlV0TkGss4AAbEA\n-----END PRIVATE KEY-----'
+
   HttpApiGateway:
     Type: AWS::Serverless::HttpApi
     Properties:
@@ -73,6 +80,7 @@ Resources:
         Variables:
           Issuer: !Ref Issuer
           Audience: !Ref Audience
+          PrivateKey: !Ref AuthSecret
       Events:
         HttpApiEvent:
           Type: HttpApi

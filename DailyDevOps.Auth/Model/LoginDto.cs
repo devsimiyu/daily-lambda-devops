@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace DailyDevOps.Auth.Model;
 
-public record class LoginDto
+public record LoginDto
 {
     [JsonPropertyName("email")]
     [Required]
